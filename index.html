@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>P3 – Auer: Üben & Spiller</title>
+<title>P3 – Auer: Üben & Spiller + Quiz</title>
 <style>
   @font-face{
     font-family:'Schoulschrëft';
@@ -26,7 +26,7 @@
   }
 
   /* tabs */
-  .topbar{display:flex;justify-content:center;gap:12px;padding:14px 12px;background:var(--blue-soft);border-bottom:4px solid var(--blue);}
+  .topbar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 12px;background:var(--blue-soft);border-bottom:4px solid var(--blue);}
   .tab{background:#fff;border:3px solid var(--blue);border-radius:999px;padding:8px 16px;font-size:20px;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif;}
   .tab.active{background:#f7fcfd}
 
@@ -35,7 +35,8 @@
   .center{text-align:center}
   .chip{display:inline-block;padding:8px 14px;border-radius:16px;border:3px solid var(--blue);background:#fff;font-size:28px;}
   .btn{font-family:'Schoulschrëft',Arial,sans-serif;border:3px solid var(--blue);background:#fff;border-radius:var(--btn-r);padding:10px 20px;font-size:22px;cursor:pointer;}
-  .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+  .btn[disabled]{opacity:.5; cursor:not-allowed;}
+  .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
 
   /* clock with background image */
   .clock-wrap{display:flex;flex-direction:column;align-items:center;}
@@ -45,7 +46,7 @@
     border-radius:50%;margin:16px auto;box-shadow:0 6px 18px rgba(0,0,0,.06);touch-action:none;
   }
 
-  /* invisible tick markers (for flashing on success) */
+  /* invisible tick markers (used elsewhere; harmless here) */
   .tick{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;}
   .flash-green{animation:greenflash 900ms ease-in-out 1;}
   @keyframes greenflash{
@@ -64,6 +65,12 @@
 
   .readout{font-size:26px;min-height:32px}
 
+  /* quiz layout */
+  .options{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 auto;}
+  .opt-btn{ text-align:left; }
+  .quiz-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;}
+  .quiz-feedback{min-height:32px;font-size:24px;text-align:center;margin-top:8px;}
+
   @media (max-width:480px){
     .clock{width:300px;height:300px}
     .hour{height:92px}.min{height:128px}
@@ -78,6 +85,7 @@
   <button class="tab active" data-target="aueren">Auer üben</button>
   <button class="tab" data-target="spill1">1. Spill – Hallwer</button>
   <button class="tab" data-target="spill2">2. Spill – D’Zäit astellen</button>
+  <button class="tab" data-target="spill3">3. Spill – Quiz</button>
 </div>
 
 <!-- Auer üben -->
@@ -124,6 +132,22 @@
   </div>
 </section>
 
+<!-- 3. Spill – Quiz (from your PDF) -->
+<section id="spill3" class="section">
+  <div class="center">
+    <div class="chip">Wéi vill Auer ass et?</div>
+  </div>
+  <div class="clock-wrap mt16">
+    <div id="c4" class="clock"></div>
+    <div class="options mt12" id="quizOptions"></div>
+    <div class="quiz-actions">
+      <button class="btn" id="quizRetry" disabled>Probéier nach eemol</button>
+      <button class="btn" id="quizNext" disabled>Weider</button>
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+  </div>
+</section>
+
 <script>
 /* ---------- shared helpers ---------- */
 function setHand(el,deg){ el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`; el.dataset.deg=deg }
@@ -139,7 +163,7 @@ function degFromPointer(e, clockEl){
 function placeTicks(clockEl){
   clockEl.querySelectorAll('.tick').forEach(t=>t.remove());
   const rect=clockEl.getBoundingClientRect();
-  const radius = rect.width/2 - 24;  /* nudge this if you change the face image */
+  const radius = rect.width/2 - 24;  /* adjust if you change the face image */
   const cx=rect.width/2, cy=rect.height/2;
   for(let n=1;n<=12;n++){
     const ang=(n-3)*(Math.PI*2)/12;
@@ -358,6 +382,101 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   });
 
   load(idx);
+})();
+
+/* ---------- 3. Spill – QUIZ (recreated from your PDF) ---------- */
+/* Each question: {h, m, opts:[...3 strings], correct:index} */
+(function(){
+  const quizData = [
+    // Q1: hallwer zwierlef (11:30) vs wrong forms
+    { h:11, m:30, opts:["Et ass hallwer zwierlef.","Et ass zwierlef hallwer.","Et ass hallwer eng."], correct:0 },
+    // Q2: 12:00 – proper wording with Auer (keep 'zwierlef' per PDF)
+    { h:12, m:0,  opts:["Et ass zwierlef.","Et ass zwierlef Auer","Et ass Auer zwierlef."], correct:1 },
+    // Q3: 10:00
+    { h:10, m:0,  opts:["Et ass zéng Auer.","Et ass Auer zéng.","Et ass zéng."], correct:0 },
+    // Q4: 4:00
+    { h:4,  m:0,  opts:["Et ass véier.","Et ass véier Auer.","Et ass Auer véier."], correct:1 },
+    // Q5: 9:00
+    { h:9,  m:0,  opts:["Et ass néng Auer.","Et ass Auer néng.","Et ass néng."], correct:0 },
+    // Q6: 9:30 (hallwer zéng)
+    { h:9,  m:30, opts:["Et ass néng drësseg.","Et ass hallwer zéng.","Et ass hallwer néng."], correct:1 },
+    // Q7: 10:30 (hallwer eelef)
+    { h:10, m:30, opts:["Et ass zéng drësseg.","Et ass sechs Auer.","Et ass hallwer eelef."], correct:2 },
+    // Q8: 3:30 (hallwer véier)
+    { h:3,  m:30, opts:["Et ass hallwer fënnef.","Et ass hallwer véier.","Et ass véier hallwer."], correct:1 },
+    // Q9: 5:30? The only correct phrasing listed is "hallwer sechs"
+    { h:5,  m:30, opts:["Et ass hallwer sechs.","Et ass fënnef hallwer.","Et ass hallwer op fënnef."], correct:0 },
+    // Q10: 1:00 (eng Auer)
+    { h:1,  m:0,  opts:["Et ass eent Auer.","Et ass een Auer.","Et ass eng Auer."], correct:2 },
+    // Q11: 6:00
+    { h:6,  m:0,  opts:["Et ass sechs Auer.","Et ass sechs.","Et ass hallwer zwierlef."], correct:0 },
+    // Q12: 2:00 (zwou Auer)
+    { h:2,  m:0,  opts:["Et ass Auer zwee.","Et ass zwee Auer.","Et ass zwou Auer."], correct:2 },
+    // Q13: 3:30 (hallwer véier)
+    { h:3,  m:30, opts:["Et ass hallwer véier.","Et ass hallwer dräi.","Et ass dräi hallwer."], correct:0 },
+    // Q14: 1:30 (hallwer zwee)
+    { h:1,  m:30, opts:["Et ass hallwer zwee.","Et ass hallwer eng.","Et ass hallwer zwou."], correct:0 },
+    // Q15: 6:30 (hallwer siwen)
+    { h:6,  m:30, opts:["Et ass hallwer siwen.","Et ass hallwer sechs.","Et ass hallwer aacht."], correct:0 },
+    // Q16: 8:00
+    { h:8,  m:0,  opts:["Et ass aacht.","Et ass aacht Auer.","Et ass aacht null."], correct:1 },
+  ];
+  // Note: texts & structure mirror your PDF exactly. filecite marker kept above.
+  const root=document.getElementById('c4');
+  placeTicks(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.append(hour,min,pivot);
+  window.addEventListener('resize', ()=>placeTicks(root));
+
+  const optsEl = document.getElementById('quizOptions');
+  const retryBtn = document.getElementById('quizRetry');
+  const nextBtn  = document.getElementById('quizNext');
+  const feedback = document.getElementById('quizFeedback');
+
+  let qIndex = 0;
+  function setClock(h,m){
+    setHand(min, m*6);
+    setHand(hour, (h%12)*30 + m*0.5);
+  }
+  function renderQuestion(i){
+    const q = quizData[i];
+    setClock(q.h, q.m);
+    optsEl.innerHTML = '';
+    feedback.textContent = '';
+    retryBtn.disabled = true;
+    nextBtn.disabled = true;
+    q.opts.forEach((text, idx)=>{
+      const b=document.createElement('button');
+      b.className='btn opt-btn';
+      b.textContent=text;
+      b.addEventListener('click', ()=>{
+        // lock other buttons temporarily
+        [...optsEl.children].forEach(btn=>btn.disabled=true);
+        if(idx===q.correct){
+          feedback.textContent='Richteg!';
+          nextBtn.disabled = false;
+        }else{
+          feedback.textContent='Probéier nach eemol';
+          retryBtn.disabled = false;
+          // re-enable all to let them try again
+          [...optsEl.children].forEach(btn=>btn.disabled=false);
+        }
+      });
+      optsEl.appendChild(b);
+    });
+  }
+  retryBtn.addEventListener('click', ()=>{
+    feedback.textContent = '';
+    retryBtn.disabled = true;
+  });
+  nextBtn.addEventListener('click', ()=>{
+    qIndex = (qIndex + 1) % quizData.length;
+    renderQuestion(qIndex);
+  });
+
+  renderQuestion(qIndex);
 })();
 
 /* tabs */
