@@ -12,8 +12,8 @@
   }
 
   :root{
-    --red:#f1583f;          /* hour hand + pivot ring */
-    --blue:#75b7cb;         /* minute hand + accents */
+    --red:#f1583f;      /* hour + pivot ring */
+    --blue:#75b7cb;     /* minute + accents */
     --blue-soft:#e5f3f6;
     --face:url('https://i.postimg.cc/6qC1Vnjg/temp-Imagel6-ZZRm.avif');
     --btn-r:18px;
@@ -21,61 +21,33 @@
 
   *{box-sizing:border-box}
   body{
-    margin:0; min-height:100vh;
-    background:#fffef8; color:#111;
-    font-family:'Schoulschrëft', Arial, sans-serif;
-    display:flex; flex-direction:column;
+    margin:0; min-height:100vh; background:#fffef8; color:#111;
+    font-family:'Schoulschrëft', Arial, sans-serif; display:flex; flex-direction:column;
   }
 
   /* tabs */
-  .topbar{
-    display:flex; justify-content:center; gap:12px;
-    padding:14px 12px; background:var(--blue-soft);
-    border-bottom:4px solid var(--blue);
-    --blue: var(--blue);
-  }
-  .tab{
-    background:#fff; border:3px solid var(--blue);
-    border-radius:999px; padding:8px 16px;
-    font-size:20px; cursor:pointer;
-    font-family:'Schoulschrëft', Arial, sans-serif;
-  }
+  .topbar{ display:flex; justify-content:center; gap:12px; padding:14px 12px; background:var(--blue-soft); border-bottom:4px solid var(--blue); }
+  .tab{ background:#fff; border:3px solid var(--blue); border-radius:999px; padding:8px 16px; font-size:20px; cursor:pointer; font-family:'Schoulschrëft', Arial, sans-serif; }
   .tab.active{ background:#f7fcfd }
 
   .section{ display:none; padding:18px 12px 30px; }
   .section.active{ display:block }
   .center{ text-align:center }
-  .chip{
-    display:inline-block; padding:8px 14px; border-radius:16px;
-    border:3px solid var(--blue); background:#fff; font-size:28px;
-  }
-  .btn{
-    font-family:'Schoulschrëft', Arial, sans-serif;
-    border:3px solid var(--blue); background:#fff;
-    border-radius:var(--btn-r); padding:10px 20px; font-size:22px; cursor:pointer;
-  }
+  .chip{ display:inline-block; padding:8px 14px; border-radius:16px; border:3px solid var(--blue); background:#fff; font-size:28px; }
+  .btn{ font-family:'Schoulschrëft', Arial, sans-serif; border:3px solid var(--blue); background:#fff; border-radius:var(--btn-r); padding:10px 20px; font-size:22px; cursor:pointer; }
   .mt8{margin-top:8px} .mt12{margin-top:12px} .mt16{margin-top:16px}
 
-  /* clock container using background image as the face */
+  /* clock with background image */
   .clock-wrap{ display:flex; flex-direction:column; align-items:center; }
   .clock{
-    position:relative;
-    width:360px; height:360px;
-    background: #fff center/contain no-repeat;
-    background-image: var(--face);
-    border-radius:50%;
-    margin:16px auto;
-    box-shadow:0 6px 18px rgba(0,0,0,.06);
-    touch-action:none;
+    position:relative; width:360px; height:360px;
+    background:#fff center/contain no-repeat; background-image:var(--face);
+    border-radius:50%; margin:16px auto; box-shadow:0 6px 18px rgba(0,0,0,.06); touch-action:none;
   }
-  /* invisible index markers (sit where numbers are, used to flash green) */
-  .tick{
-    position:absolute; width:44px; height:44px;
-    transform:translate(-50%,-50%);
-    border-radius:50%;
-    pointer-events:none; /* not interactive */
-  }
-  .flash-green{ animation: greenflash 900ms ease-in-out 1; }
+
+  /* invisible tick markers for flashing */
+  .tick{ position:absolute; width:44px; height:44px; transform:translate(-50%,-50%); border-radius:50%; pointer-events:none; }
+  .flash-green{ animation:greenflash 900ms ease-in-out 1; }
   @keyframes greenflash{
     0%{ box-shadow:0 0 0 0 rgba(0,160,0,0); background:transparent; }
     25%{ box-shadow:0 0 0 6px rgba(0,160,0,.15); background:rgba(0,200,0,.08); }
@@ -83,20 +55,12 @@
     100%{ box-shadow:0 0 0 0 rgba(0,160,0,0); background:transparent; }
   }
 
-  /* hands */
-  .hand{
-    position:absolute; left:50%; top:50%;
-    transform-origin:50% 100%;
-    border-radius:6px; touch-action:none; cursor:grab;
-  }
-  .hour{ width:8px;  height:110px; background:var(--red);  transform:translate(-50%,-100%) rotate(0deg); }
-  .min { width:6px;  height:150px; background:var(--blue); transform:translate(-50%,-100%) rotate(0deg); }
-  .ghost{ opacity:.6 }            /* 60% transparency for hallwer move */
-  .pivot{
-    position:absolute; left:50%; top:50%;
-    width:18px; height:18px; background:#fff; border:4px solid var(--red);
-    border-radius:50%; transform:translate(-50%,-50%);
-  }
+  /* hands (z-order: hour on top of minute, pivot on top of both) */
+  .hand{ position:absolute; left:50%; top:50%; transform-origin:50% 100%; border-radius:6px; touch-action:none; cursor:grab; z-index:1; }
+  .min{  width:6px;  height:150px; background:var(--blue);  transform:translate(-50%,-100%) rotate(0deg); z-index:2; }
+  .hour{ width:8px;  height:110px; background:var(--red);   transform:translate(-50%,-100%) rotate(0deg); z-index:3; }
+  .ghost{ opacity:.6 }
+  .pivot{ position:absolute; left:50%; top:50%; width:18px; height:18px; background:#fff; border:4px solid var(--red); border-radius:50%; transform:translate(-50%,-50%); z-index:4; }
 
   .readout{ font-size:26px; min-height:32px }
 
@@ -144,7 +108,7 @@
   </div>
 </section>
 
-<!-- 2. Spill – D’Zäit astellen (P3 prompts) -->
+<!-- 2. Spill – D’Zäit astellen -->
 <section id="spill2" class="section">
   <div class="center">
     <div id="pPrompt" class="chip">Et ass zéng Auer</div>
@@ -154,13 +118,16 @@
   </div>
   <div class="clock-wrap mt16">
     <div id="c3" class="clock"></div>
-    <div class="center mt12"><button class="btn" id="pValidate">Validéieren</button></div>
+    <div class="center mt12">
+      <button class="btn" id="pValidate">Validéieren</button>
+      <button class="btn" id="pNext" style="margin-left:8px;">Nächst Beispill</button>
+    </div>
     <div id="pFeedback" class="readout center"></div>
   </div>
 </section>
 
 <script>
-/* ---------- utilities ---------- */
+/* ---------- shared helpers ---------- */
 function setHand(el,deg){ el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`; el.dataset.deg=deg }
 function degFromPointer(e, clockEl){
   const r=clockEl.getBoundingClientRect();
@@ -171,25 +138,24 @@ function degFromPointer(e, clockEl){
   if(d<0) d+=360;
   return d;
 }
-/* overlay 12 tick markers to match where numbers are on the face image */
+/* place invisible tick markers matching printed numerals (for flash) */
 function placeTicks(clockEl){
   clockEl.querySelectorAll('.tick').forEach(t=>t.remove());
   const rect=clockEl.getBoundingClientRect();
-  const radius = rect.width/2 - 24;   // tuned so the marker sits neatly on printed numbers
+  const radius = rect.width/2 - 24;   // adjust if you change face image
   const cx=rect.width/2, cy=rect.height/2;
   for(let n=1;n<=12;n++){
     const ang=(n-3)*(Math.PI*2)/12;
-    const x=cx + radius * Math.cos(ang);
-    const y=cy + radius * Math.sin(ang);
+    const x=cx + radius*Math.cos(ang);
+    const y=cy + radius*Math.sin(ang);
     const t=document.createElement('div');
-    t.className='tick';
-    t.dataset.n=n;
+    t.className='tick'; t.dataset.n=n;
     t.style.left=x+'px'; t.style.top=y+'px';
     clockEl.appendChild(t);
   }
 }
 
-/* ----- Auer üben (coupled) ----- */
+/* ---------- Auer üben (coupled) ---------- */
 function coupledClock(rootId, readoutId, showDigital=true){
   const root=document.getElementById(rootId);
   placeTicks(root);
@@ -209,9 +175,7 @@ function coupledClock(rootId, readoutId, showDigital=true){
   function render(){
     setHand(min, M*6);
     setHand(hour, (H%12)*30 + M*0.5);
-    if(ro){
-      ro.textContent = showDigital ? `${String(((H%12)||12)).padStart(2,'0')}:${String(M).padStart(2,'0')}` : '';
-    }
+    if(ro) ro.textContent = showDigital ? `${String(((H%12)||12)).padStart(2,'0')}:${String(M).padStart(2,'0')}` : '';
   }
   function setTime(h,m){ H=h; M=m; normalize(); render(); }
 
@@ -245,24 +209,22 @@ function coupledClock(rootId, readoutId, showDigital=true){
   drag(min,'min'); drag(hour,'hour');
 
   setTime(10,10);
-  return { setTime, root, hour, min };
+  return { setTime };
 }
 
-/* mount: Auer üben */
+/* mount simple clock */
 const simple = coupledClock('c1','c1readout', true);
 document.getElementById('toggleDigital').addEventListener('change', e=>{
   document.getElementById('c1readout').style.display = e.target.checked ? 'block' : 'none';
 });
 
-/* ----- 1. Spill – Hallwer (with image face + green flash) ----- */
+/* ---------- 1. Spill – Hallwer ---------- */
 (function(){
   const root=document.getElementById('c2');
   placeTicks(root);
 
-  // SOLID start hands (X:30)
   const hSolid=document.createElement('div'); hSolid.className='hand hour';
   const mSolid=document.createElement('div'); mSolid.className='hand min';
-  // GHOST draggable hands
   const hGhost=document.createElement('div'); hGhost.className='hand hour ghost';
   const mGhost=document.createElement('div'); mGhost.className='hand min ghost';
   const pivot=document.createElement('div'); pivot.className='pivot';
@@ -273,12 +235,10 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
 
   const fb=document.getElementById('hFeedback');
 
-  let X=3;  // base hour for X:30
+  let X=3; // start hour for X:30
   function setStart(x){
-    // solid at x:30
     setHand(mSolid, 180);
-    setHand(hSolid, (x%12)*30 + 15); // +15° (30 min * 0.5)
-    // ghosts start at same
+    setHand(hSolid, (x%12)*30 + 15);
     setHand(mGhost, 180);
     setHand(hGhost, (x%12)*30 + 15);
     fb.textContent = "";
@@ -290,17 +250,15 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
 
   function coupleGhostByMinute(deg){
     setHand(mGhost, deg);
-    // minute value 0..59
     const mm = Math.round(((deg%360)+360)%360 / 6);
-    // forward distance from 30 towards top (wrap forward)
-    const forward = ((mm + 60) - 30) % 60;   // 0..59
-    const hourFrac = X + 0.5 + forward/60;   // increases towards next hour
+    const forward = ((mm + 60) - 30) % 60;   // 0..59 forward from :30
+    const hourFrac = X + 0.5 + forward/60;
     const hDeg = (hourFrac % 12) * 30;
     setHand(hGhost, hDeg);
     return { mm, hourFrac, hDeg };
   }
 
-  // drag ghost minute
+  // drag only the minute ghost
   (function(){
     let on=false;
     const start=e=>{ if(e.target!==mGhost) return; on=true; e.preventDefault(); }
@@ -314,25 +272,22 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     window.addEventListener('touchend',end);
   })();
 
-  // continuous success check
   function check(){
     const mDeg = parseFloat(mGhost.dataset.deg||'0');
     const mm   = Math.round(((mDeg%360)+360)%360 / 6) % 60;
-    const atTop = (mm<=3 || mm>=57);              // ±3 minutes tolerance at 12
+    const atTop = (mm<=3 || mm>=57);
     const next = (X % 12) + 1;
     const hDeg = parseFloat(hGhost.dataset.deg||'0');
     const targetH = (next%12)*30;
     const diff = Math.abs((((hDeg-targetH)+540)%360)-180);
-    const hourOK = diff <= 6;                     // ±6° tolerance on hour
+    const hourOK = diff <= 6;
 
     if(atTop && hourOK){
       fb.textContent = `Richteg! Et ass hallwer ${next}.`;
-      // flash the next-hour position
       const ticks = [...root.querySelectorAll('.tick')];
       const tick = ticks.find(t => Number(t.dataset.n) === (next===13?1:next));
       if(tick){
-        tick.classList.remove('flash-green');
-        void tick.offsetWidth; // restart animation
+        tick.classList.remove('flash-green'); void tick.offsetWidth;
         tick.classList.add('flash-green');
       }
       setTimeout(newRound, 1100);
@@ -344,7 +299,7 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   requestAnimationFrame(check);
 })();
 
-/* ----- 2. Spill – D’Zäit astellen (P3 set) ----- */
+/* ---------- 2. Spill – D’Zäit astellen (P3 set) ---------- */
 (function(){
   const items = [
     { label:"Et ass zéng Auer",         h:10, m:0,  audio:"audio/p3_zeng_auer.mp3" },
@@ -412,7 +367,9 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     const okM = smallest(mDeg, mt) <= MIN_TOL;
     const okH = smallest(hDeg, ht) <= HOUR_TOL;
     fb.textContent = (okM && okH) ? 'Richteg!' : 'Nach eng Kéier!';
-    if(okM && okH){ setTimeout(()=>{ idx=(idx+1)%items.length; load(idx); }, 800); }
+  });
+  document.getElementById('pNext').addEventListener('click', ()=>{
+    idx = (idx + 1) % items.length; load(idx);
   });
 
   load(idx);
@@ -430,6 +387,4 @@ document.querySelectorAll('.tab').forEach(btn=>{
 </script>
 </body>
 </html>
-
-
 
