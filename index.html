@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>P3 – 1. Spill: D'Zäit astellen</title>
+<title>P3 – Auer: Üben & Spiller</title>
 <style>
   @font-face{
     font-family:'Schoulschrëft';
@@ -12,269 +12,464 @@
   }
 
   :root{
-    --p3-blue:#75b7cb;
-    --p3-blue-soft:#e5f3f6;
-    --p3-red:#f1583f;
-    --btn-radius:18px;
+    --red:#f1583f;   /* bezel + hour hand */
+    --blue:#75b7cb;  /* minute hand + accents */
+    --blue-soft:#e5f3f6;
+    --radius-btn:18px;
   }
 
   *{box-sizing:border-box}
   body{
     margin:0;
     font-family:'Schoulschrëft', Arial, sans-serif;
-    background:#fffef8;
-    color:#111;
-    display:flex;
-    flex-direction:column;
-    min-height:100vh;
+    background:#fffef8; color:#111;
+    display:flex; flex-direction:column; min-height:100vh;
   }
 
-  /* top bar */
+  /* top tabs */
   .topbar{
-    display:flex;
-    justify-content:center;
-    gap:16px;
-    padding:14px 12px;
-    background:var(--p3-blue-soft);
-    border-bottom:4px solid var(--p3-blue);
+    display:flex; justify-content:center; gap:12px;
+    padding:14px 12px; background:var(--blue-soft);
+    border-bottom:4px solid var(--blue);
   }
-  .tab-btn{
+  .tab{
     font-family:'Schoulschrëft', Arial, sans-serif;
-    background:#fff;
-    border:3px solid var(--p3-blue);
-    border-radius:999px;
-    padding:8px 18px;
-    font-size:22px;
+    background:#fff; border:3px solid var(--blue);
+    border-radius:999px; padding:8px 16px; font-size:20px;
     cursor:pointer;
   }
-  .tab-btn.active{ background:#f8fcfd; }
+  .tab.active{ background:#f7fcfd }
 
-  /* prompt */
-  .prompt-wrap{ display:flex; justify-content:center; padding:18px 10px 8px; }
-  #prompt{
-    background:#fff;
-    border:3px solid var(--p3-blue);
-    border-radius:20px;
-    padding:8px 16px;
-    font-size:34px;
-    max-width:min(90vw, 900px);
+  /* section wrapper */
+  .section{ display:none; padding:18px 12px 30px; }
+  .section.active{ display:block }
+
+  /* headline chips / prompts */
+  .chip{
+    display:inline-block; padding:8px 14px; border-radius:16px;
+    border:3px solid var(--blue); background:#fff;
+    font-size:28px;
   }
+  .center{ text-align:center }
+  .mt8{ margin-top:8px } .mt12{ margin-top:12px } .mt16{ margin-top:16px }
+  .mt20{ margin-top:20px } .mt24{ margin-top:24px }
 
-  /* listen button */
-  .controls{ display:flex; justify-content:center; gap:12px; padding:10px 0 0; }
+  /* buttons */
   .btn{
     font-family:'Schoulschrëft', Arial, sans-serif;
-    border:3px solid var(--p3-blue);
-    background:#fff;
-    border-radius:var(--btn-radius);
-    padding:10px 20px;
-    font-size:22px;
-    cursor:pointer;
+    border:3px solid var(--blue); background:#fff;
+    border-radius:var(--radius-btn); padding:10px 20px;
+    font-size:22px; cursor:pointer;
   }
 
-  /* clock area */
-  .stage{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding:18px 12px 28px;
-  }
-  #clock{
+  /* clock */
+  .clock-wrap{ display:flex; flex-direction:column; align-items:center; }
+  .clock{
     position:relative;
     width:360px; height:360px;
     background:#fff;
-    border:12px solid var(--p3-red);
+    border:12px solid var(--red);
     border-radius:50%;
-    margin:18px auto;
+    margin:16px auto;
     box-shadow:0 6px 18px rgba(0,0,0,.06);
-  }
-  .number{
-    position:absolute;
-    width:40px; height:40px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:30px;
-    color:#000;
-    transform:translate(-50%, -50%);
-    font-family:'Schoulschrëft', Arial, sans-serif;
-  }
-  .hand{
-    position:absolute;
-    left:50%; top:50%;
-    transform-origin:50% 100%;
-    cursor:grab;
-    border-radius:6px;
     touch-action:none;
   }
-  #hourHand{
-    width:8px; height:110px;
-    background:var(--p3-red);
-    transform:translate(-50%, -100%) rotate(0deg);
-  }
-  #minuteHand{
-    width:6px; height:150px;
-    background:var(--p3-blue);
-    transform:translate(-50%, -100%) rotate(0deg);
-  }
-  .pivot{
+  .num{
     position:absolute;
-    left:50%; top:50%;
-    width:18px; height:18px;
-    background:#fff;
-    border:4px solid var(--p3-red);
-    border-radius:50%;
+    width:42px; height:42px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:30px; color:#000;
     transform:translate(-50%, -50%);
   }
+  .hand{
+    position:absolute; left:50%; top:50%;
+    transform-origin:50% 100%;
+    border-radius:6px; cursor:grab; touch-action:none;
+  }
+  .hour{ width:8px;  height:110px; background:var(--red);  transform:translate(-50%,-100%) rotate(0deg); }
+  .min { width:6px;  height:150px; background:var(--blue); transform:translate(-50%,-100%) rotate(0deg); }
+  .min.ghost{ opacity:.6 }  /* 60% transparency for hallwer game */
+  .hour.ghost{ opacity:.6 }
+  .pivot{
+    position:absolute; left:50%; top:50%;
+    width:18px; height:18px; background:#fff; border:4px solid var(--red);
+    border-radius:50%; transform:translate(-50%,-50%);
+  }
 
-  #validateBtn{ margin-top:10px; }
-  #feedback{ min-height:36px; font-size:26px; margin-top:6px; }
+  .readout{ font-size:26px; min-height:32px }
+
+  /* flash next-hour when correct */
+  .flash-green{ animation:greenflash 900ms ease-in-out 1; }
+  @keyframes greenflash{
+    0%{ background:#fff; color:#000; border-color:transparent; }
+    20%{ background:#eaffea; color:#0a0; border-color:#0a0; border-width:3px; border-style:solid; border-radius:50%; }
+    100%{ background:#fff; color:#000; border-color:transparent; }
+  }
 
   @media (max-width:480px){
-    #clock{ width:300px; height:300px }
-    #hourHand{ height:92px } #minuteHand{ height:128px }
-    .number{ font-size:26px; width:34px; height:34px }
-    #prompt{ font-size:28px }
+    .clock{ width:300px; height:300px }
+    .hour{ height:92px } .min{ height:128px }
+    .num{ width:36px; height:36px; font-size:26px }
+    .chip{ font-size:24px }
+    .btn{ font-size:20px }
   }
 </style>
 </head>
 <body>
 
+<!-- tabs -->
 <div class="topbar">
-  <button class="tab-btn active">1. Spill</button>
-  <button class="tab-btn" onclick="alert('2. Spill kënnt geschwënn.')">2. Spill</button>
+  <button class="tab active" data-target="aueren">Auer üben</button>
+  <button class="tab" data-target="spill1">1. Spill – Hallwer</button>
+  <button class="tab" data-target="spill2">2. Spill – D’Zäit astellen</button>
 </div>
 
-<div class="prompt-wrap"><div id="prompt">Et ass zéng Auer</div></div>
+<!-- Auer üben (simple coupled clock) -->
+<section id="aueren" class="section active">
+  <div class="center">
+    <div class="chip">Probéier e puer Auerzäiten aus</div>
+    <div class="mt12">
+      <label style="font-size:20px">
+        <input type="checkbox" id="toggleDigital" checked>
+        Digital Auer uweisen
+      </label>
+    </div>
+  </div>
 
-<div class="controls">
-  <button class="btn" id="listenBtn">Lauschteren</button>
-</div>
+  <div class="clock-wrap mt16">
+    <div id="c1" class="clock"></div>
+    <div id="c1readout" class="readout center">12:00</div>
+  </div>
+</section>
 
-<div class="stage">
-  <div id="clock"></div>
-  <button class="btn" id="validateBtn">Validéieren</button>
-  <div id="feedback"></div>
-</div>
+<!-- 1. Spill – Hallwer -->
+<section id="spill1" class="section">
+  <div class="center">
+    <div id="hPrompt" class="chip">Beweeg d’Minuttenhand bis bei déi nächst voll Stonn</div>
+    <div class="mt8" style="font-size:20px">Zil: vun <span id="startTxt">3:30</span> → <span id="goalTxt">4:00</span></div>
+  </div>
+
+  <div class="clock-wrap mt16">
+    <div id="c2" class="clock"></div>
+    <div id="hFeedback" class="readout center"></div>
+  </div>
+</section>
+
+<!-- 2. Spill – D’Zäit astellen (your practice) -->
+<section id="spill2" class="section">
+  <div class="center">
+    <div id="pPrompt" class="chip">Et ass zéng Auer</div>
+    <div class="mt12">
+      <button class="btn" id="pListen">Lauschteren</button>
+    </div>
+  </div>
+
+  <div class="clock-wrap mt16">
+    <div id="c3" class="clock"></div>
+    <div class="center mt12">
+      <button class="btn" id="pValidate">Validéieren</button>
+    </div>
+    <div id="pFeedback" class="readout center"></div>
+  </div>
+</section>
 
 <script>
-/* ----------- data (P3 times) ----------- */
-const items = [
-  { label:"Et ass zéng Auer", h:10, m:0,  audio:"audio/p3_zeng_auer.mp3" },
-  { label:"Et ass hallwer zwielef", h:11, m:30, audio:"audio/p3_hallwer_zwielef.mp3" },
-  { label:"Et ass néng Auer", h:9, m:0, audio:"audio/p3_neng_auer.mp3" },
-  { label:"Et ass hallwer siwen", h:6, m:30, audio:"audio/p3_hallwer_siwen.mp3" },
-  { label:"Et ass aacht Auer", h:8, m:0, audio:"audio/p3_aacht_auer.mp3" },
-  { label:"Et ass hallwer dräi", h:2, m:30, audio:"audio/p3_hallwer_draei.mp3" },
-  { label:"Et ass zwielef Auer", h:12, m:0, audio:"audio/p3_zwielef_auer.mp3" },
-  { label:"Et ass hallwer néng", h:8, m:30, audio:"audio/p3_hallwer_neng.mp3" },
-  { label:"Et ass dräi Auer", h:3, m:0, audio:"audio/p3_draei_auer.mp3" },
-  { label:"Et ass hallwer aacht", h:7, m:30, audio:"audio/p3_hallwer_aacht.mp3" },
-  { label:"Et ass fënnef Auer", h:5, m:0, audio:"audio/p3_fennef_auer.mp3" },
-  { label:"Et ass hallwer zéng", h:9, m:30, audio:"audio/p3_hallwer_zeng.mp3" },
-  { label:"Et ass sechs Auer", h:6, m:0, audio:"audio/p3_sechs_auer.mp3" },
-  { label:"Et ass hallwer fënnef", h:4, m:30, audio:"audio/p3_hallwer_fennef.mp3" },
-  { label:"Et ass eng Auer", h:1, m:0, audio:"audio/p3_eng_auer.mp3" }
-];
-function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
-shuffle(items);
-let idx=0;
-
-/* -------- clock -------- */
-const clock=document.getElementById('clock');
-const center={x:180,y:180};
-let hands;
-
-function drawNumbers(){
-  const existing=document.querySelectorAll('.number'); existing.forEach(n=>n.remove());
-  const rect=clock.getBoundingClientRect();
-  const radius=(rect.width/2)-28; // inward adjust
-  for(let n=1;n<=12;n++){
-    const ang=(n-3)*(Math.PI*2)/12;
-    const x=center.x+radius*Math.cos(ang);
-    const y=center.y+radius*Math.sin(ang);
-    const el=document.createElement('div');
-    el.className='number';
-    el.style.left=x+'px'; el.style.top=y+'px';
-    el.textContent=n;
-    clock.appendChild(el);
-  }
-}
-function createHands(){
-  const h=document.createElement('div');h.id='hourHand';h.className='hand';
-  const m=document.createElement('div');m.id='minuteHand';m.className='hand';
-  const p=document.createElement('div');p.className='pivot';
-  clock.appendChild(h);clock.appendChild(m);clock.appendChild(p);
-  return{hour:h,min:m};
-}
-drawNumbers();
-hands=createHands();
-window.addEventListener('resize',drawNumbers);
-
-/* -------- dragging -------- */
-function angleFromPointer(e){
-  const rect=clock.getBoundingClientRect();
-  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+/* ===== helpers for all clocks ===== */
+function borderPx(el){ return parseFloat(getComputedStyle(el).borderLeftWidth||'0') }
+function setHand(el,deg){ el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`; el.dataset.deg=deg }
+function degFromPointer(e, clockEl){
+  const r=clockEl.getBoundingClientRect();
+  const cx=r.left+r.width/2, cy=r.top+r.height/2;
   const px=(e.touches?e.touches[0].clientX:e.clientX);
   const py=(e.touches?e.touches[0].clientY:e.clientY);
-  let deg=Math.atan2(py-cy,px-cx)*180/Math.PI+90;
-  if(deg<0)deg+=360;
-  return deg;
+  let d=Math.atan2(py-cy, px-cx)*180/Math.PI + 90;
+  if(d<0) d+=360;
+  return d;
 }
-function makeRotatable(el){
-  let active=false;
-  const start=ev=>{if(ev.target!==el)return;active=true;ev.preventDefault();}
-  const move=ev=>{if(!active)return;const deg=angleFromPointer(ev);setHand(el,deg);}
-  const end=()=>{active=false;}
-  el.addEventListener('mousedown',start);
-  window.addEventListener('mousemove',move);
-  window.addEventListener('mouseup',end);
-  el.addEventListener('touchstart',start,{passive:false});
-  window.addEventListener('touchmove',move,{passive:false});
-  window.addEventListener('touchend',end);
-}
-function setHand(el,deg){
-  el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`;
-  el.dataset.deg=deg;
-}
-makeRotatable(hands.hour);makeRotatable(hands.min);
+function drawNumbers(clockEl){
+  // remove old
+  clockEl.querySelectorAll('.num').forEach(n=>n.remove());
+  const rect=clockEl.getBoundingClientRect();
+  const b=borderPx(clockEl);
+  const radius=rect.width/2 - b - 22;  // inward padding so digits sit nicely
+  const cx=rect.width/2, cy=rect.height/2;
 
-/* -------- load + validate -------- */
-const promptEl=document.getElementById('prompt');
-const feedbackEl=document.getElementById('feedback');
-const audio=new Audio();
-
-function loadItem(i){
-  const it=items[i];
-  promptEl.textContent=it.label;
-  feedbackEl.textContent="";
-  setHand(hands.min,0); setHand(hands.hour,0);
-  const mAng=it.m*6;
-  const hAng=((it.h%12)*30)+it.m*0.5;
-  hands.min.dataset.target=mAng;
-  hands.hour.dataset.target=hAng;
-  audio.src=it.audio;
-}
-function smallestAngleDiff(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
-const MIN_TOL=9,HOUR_TOL=7;
-function validate(){
-  const mDeg=parseFloat(hands.min.dataset.deg||0);
-  const hDeg=parseFloat(hands.hour.dataset.deg||0);
-  const mTarget=parseFloat(hands.min.dataset.target);
-  const hTarget=parseFloat(hands.hour.dataset.target);
-  const okM=smallestAngleDiff(mDeg,mTarget)<=MIN_TOL;
-  const okH=smallestAngleDiff(hDeg,hTarget)<=HOUR_TOL;
-  if(okM&&okH){
-    feedbackEl.textContent="Richteg!";
-    setTimeout(()=>{idx=(idx+1)%items.length;loadItem(idx);},800);
-  }else{
-    feedbackEl.textContent="Nach eng Kéier!";
+  for(let n=1;n<=12;n++){
+    const ang=(n-3)*(Math.PI*2)/12;
+    const x=cx + radius*Math.cos(ang);
+    const y=cy + radius*Math.sin(ang);
+    const d=document.createElement('div');
+    d.className='num';
+    d.style.left=x+'px'; d.style.top=y+'px';
+    d.dataset.n=n;
+    d.textContent=n;
+    clockEl.appendChild(d);
   }
 }
 
-/* -------- wires -------- */
-document.getElementById('listenBtn').addEventListener('click',()=>audio.play());
-document.getElementById('validateBtn').addEventListener('click',validate);
-loadItem(idx);
+/* ===== Auer üben (coupled) ===== */
+function coupledClock(rootId, readoutId, showDigital=true){
+  const root=document.getElementById(rootId);
+  drawNumbers(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.appendChild(hour); root.appendChild(min); root.appendChild(pivot);
+  window.addEventListener('resize', ()=>drawNumbers(root));
+
+  let H=12, M=0;
+  const ro = readoutId ? document.getElementById(readoutId) : null;
+
+  const render=()=>{
+    const mDeg=M*6;
+    const hDeg=((H%12)*30) + M*0.5;
+    setHand(min, mDeg); setHand(hour, hDeg);
+    if(ro && showDigital) ro.textContent = `${String(((H%12)||12)).padStart(2,'0')}:${String(M).padStart(2,'0')}`;
+    if(ro && !showDigital) ro.textContent = '';
+  };
+
+  function setTime(h,m){
+    H=h; M=m;
+    while(M<0){M+=60;H--} while(M>=60){M-=60;H++}
+    while(H<=0){H+=12} while(H>12){H-=12}
+    render();
+  }
+
+  // dragging: moving either hand updates the other realistically
+  function drag(el, mode){
+    let active=false;
+    const start=ev=>{ if(ev.target!==el) return; active=true; ev.preventDefault(); }
+    const move=ev=>{
+      if(!active) return;
+      const deg=degFromPointer(ev, root);
+
+      if(mode==='min'){
+        // compute delta minutes shortest way
+        const prev=M*6;
+        let delta=(((deg - prev + 540) % 360) - 180); // -180..180
+        const dm=Math.round(delta/6);
+        setTime(H, M+dm);
+      }else{
+        // hour hand → convert angle to fractional hour
+        let total=deg/30; if(total<0) total+=12;
+        const base=Math.floor(total)||12;
+        let frac=total - Math.floor(total);
+        let mins=Math.round(frac*60);
+        if(mins===60){ mins=0; total+=1; }
+        setTime((Math.floor(total)||12), mins);
+      }
+    };
+    const end=()=>{ active=false; };
+    el.addEventListener('mousedown',start);
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',end);
+    el.addEventListener('touchstart',start,{passive:false});
+    window.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',end);
+  }
+  drag(min,'min'); drag(hour,'hour');
+
+  setTime(10,10);
+  return { setTime, root, hour, min, render };
+}
+
+/* mount simple clock */
+const simple = coupledClock('c1','c1readout', true);
+document.getElementById('toggleDigital').addEventListener('change', e=>{
+  if(e.target.checked){ document.getElementById('c1readout').style.display='block'; }
+  else{ document.getElementById('c1readout').style.display='none'; }
+});
+
+/* ===== 1. Spill – Hallwer ===== */
+(function(){
+  const root=document.getElementById('c2');
+  drawNumbers(root);
+
+  // solid original hands (start state X:30)
+  const hourSolid=document.createElement('div'); hourSolid.className='hand hour';
+  const minSolid =document.createElement('div'); minSolid.className='hand min';
+  // draggable ghost hands
+  const hourGhost=document.createElement('div'); hourGhost.className='hand hour ghost';
+  const minGhost =document.createElement('div'); minGhost.className='hand min ghost';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.appendChild(hourSolid); root.appendChild(minSolid);
+  root.appendChild(hourGhost); root.appendChild(minGhost);
+  root.appendChild(pivot);
+  window.addEventListener('resize', ()=>drawNumbers(root));
+
+  const fb=document.getElementById('hFeedback');
+  const startTxt=document.getElementById('startTxt');
+  const goalTxt=document.getElementById('goalTxt');
+
+  let X = 3;     // starting hour (randomised)
+  let Mghost = 30; // ghost minutes
+  function setSolid(x){ // draw solid (start  x:30)
+    const mDeg=30*6;                  // 180°
+    const hDeg=(x%12)*30 + 30*0.5;    // halfway between x and x+1
+    setHand(minSolid, mDeg); setHand(hourSolid, hDeg);
+  }
+  function setGhost(minuteDeg){ setHand(minGhost, minuteDeg) }
+
+  function setGhostHourByMinute(mm){
+    // treat movement forward from 30 towards 90 (wrap), compute fractional hours
+    // map mm (0..359°) to minutes 0..59:
+    const mmVal = Math.round((mm % 360) / 6);
+    // forward distance from 30 to mm (wrap forward)
+    const forward = ((mmVal + 60) - 30) % 60;  // 0..59 forward from 30
+    const hourFrac = X + 0.5 + forward/60;     // moves to X+1 when forward=30 (mmVal=0)
+    const hourDeg = (hourFrac % 12) * 30;
+    setHand(hourGhost, hourDeg);
+    return {mmVal, hourFrac};
+  }
+
+  // init round
+  function newRound(){
+    X = Math.floor(Math.random()*12)+1; // 1..12
+    setSolid(X);
+    // ghosts start at same time (X:30)
+    setGhost(180);
+    setGhostHourByMinute(180);
+    fb.textContent="";
+    const next = (X % 12) + 1;
+    startTxt.textContent = `${X}:30`;
+    goalTxt.textContent  = `${next}:00`;
+  }
+
+  // drag only minute ghost; hour ghost couples
+  (function dragGhost(){
+    let active=false;
+    const start=ev=>{ if(ev.target!==minGhost) return; active=true; ev.preventDefault(); }
+    const move=ev=>{
+      if(!active) return;
+      const deg=degFromPointer(ev, root);
+      setGhost(deg);
+      setGhostHourByMinute(deg);
+    };
+    const end=()=>{ active=false; };
+    minGhost.addEventListener('mousedown',start);
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',end);
+    minGhost.addEventListener('touchstart',start,{passive:false});
+    window.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',end);
+  })();
+
+  // validate continuously: if ghost minute ≈ 0 and hour at next hour → success
+  function checkSuccess(){
+    const mDeg = parseFloat(minGhost.dataset.deg||'0');
+    const mmVal = Math.round(((mDeg%360)+360)%360 / 6) % 60;
+    const tolMin = 4; // ~±24°
+    const isMinuteTop = (mmVal<=tolMin || mmVal>=60-tolMin);
+    const next = (X % 12) + 1;
+    // hour ghost angle
+    const hDeg = parseFloat(hourGhost.dataset.deg||'0');
+    const targetH = (next%12)*30;
+    const diff = ((Math.abs(hDeg - targetH) + 180) % 360) - 180;
+    const okHour = Math.abs(diff) <= 6; // ±6° tolerance
+    if(isMinuteTop && okHour){
+      fb.textContent = `Richteg! Et ass hallwer ${next}.`;
+      // flash target number
+      const toFlash = Array.from(root.querySelectorAll('.num'))
+        .find(n => Number(n.dataset.n) === (next===13?1:next));
+      if(toFlash){
+        toFlash.classList.remove('flash-green'); // retrigger
+        void toFlash.offsetWidth;
+        toFlash.classList.add('flash-green');
+      }
+      setTimeout(newRound, 1100);
+    }
+    requestAnimationFrame(checkSuccess);
+  }
+  newRound();
+  requestAnimationFrame(checkSuccess);
+})();
+
+/* ===== 2. Spill – D’Zäit astellen (your practice) ===== */
+(function(){
+  const items = [
+    { label:"Et ass zéng Auer",         h:10, m:0,  audio:"audio/p3_zeng_auer.mp3" },
+    { label:"Et ass hallwer zwielef",   h:11, m:30, audio:"audio/p3_hallwer_zwielef.mp3" },
+    { label:"Et ass néng Auer",         h:9,  m:0,  audio:"audio/p3_neng_auer.mp3" },
+    { label:"Et ass hallwer siwen",     h:6,  m:30, audio:"audio/p3_hallwer_siwen.mp3" },
+    { label:"Et ass aacht Auer",        h:8,  m:0,  audio:"audio/p3_aacht_auer.mp3" },
+    { label:"Et ass hallwer dräi",      h:2,  m:30, audio:"audio/p3_hallwer_draei.mp3" },
+    { label:"Et ass zwielef Auer",      h:12, m:0,  audio:"audio/p3_zwielef_auer.mp3" },
+    { label:"Et ass hallwer néng",      h:8,  m:30, audio:"audio/p3_hallwer_neng.mp3" },
+    { label:"Et ass dräi Auer",         h:3,  m:0,  audio:"audio/p3_draei_auer.mp3" },
+    { label:"Et ass hallwer aacht",     h:7,  m:30, audio:"audio/p3_hallwer_aacht.mp3" },
+    { label:"Et ass fënnef Auer",       h:5,  m:0,  audio:"audio/p3_fennef_auer.mp3" },
+    { label:"Et ass hallwer zéng",      h:9,  m:30, audio:"audio/p3_hallwer_zeng.mp3" },
+    { label:"Et ass sechs Auer",        h:6,  m:0,  audio:"audio/p3_sechs_auer.mp3" },
+    { label:"Et ass hallwer fënnef",    h:4,  m:30, audio:"audio/p3_hallwer_fennef.mp3" },
+    { label:"Et ass eng Auer",          h:1,  m:0,  audio:"audio/p3_eng_auer.mp3" }
+  ];
+  function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+  shuffle(items);
+  let idx=0;
+
+  const root=document.getElementById('c3');
+  drawNumbers(root);
+  const hour=document.createElement('div'); hour.className='hand hour';
+  const min =document.createElement('div'); min.className='hand min';
+  const pivot=document.createElement('div'); pivot.className='pivot';
+  root.appendChild(hour); root.appendChild(min); root.appendChild(pivot);
+  window.addEventListener('resize', ()=>drawNumbers(root));
+
+  const promptEl=document.getElementById('pPrompt');
+  const fb=document.getElementById('pFeedback');
+  const audio=new Audio();
+
+  function load(i){
+    const it=items[i];
+    promptEl.textContent = it.label;
+    setHand(min,0); setHand(hour,0);
+    min.dataset.target = (it.m*6);
+    hour.dataset.target = ((it.h%12)*30 + it.m*0.5);
+    audio.src = it.audio;
+    fb.textContent = '';
+  }
+
+  function smallest(a,b){ let d=Math.abs(a-b)%360; return d>180?360-d:d }
+  const MIN_TOL=9, HOUR_TOL=7;
+
+  function drag(el){
+    let on=false;
+    const start=e=>{ if(e.target!==el) return; on=true; e.preventDefault(); }
+    const move=e=>{ if(!on) return; const d=degFromPointer(e, root); setHand(el,d); }
+    const end =()=>{ on=false; };
+    el.addEventListener('mousedown',start);
+    window.addEventListener('mousemove',move);
+    window.addEventListener('mouseup',end);
+    el.addEventListener('touchstart',start,{passive:false});
+    window.addEventListener('touchmove',move,{passive:false});
+    window.addEventListener('touchend',end);
+  }
+  drag(min); drag(hour);
+
+  document.getElementById('pListen').addEventListener('click', ()=>audio.play());
+  document.getElementById('pValidate').addEventListener('click', ()=>{
+    const mDeg=parseFloat(min.dataset.deg||0), hDeg=parseFloat(hour.dataset.deg||0);
+    const mt=parseFloat(min.dataset.target), ht=parseFloat(hour.dataset.target);
+    const okM = smallest(mDeg, mt) <= MIN_TOL;
+    const okH = smallest(hDeg, ht) <= HOUR_TOL;
+    if(okM && okH){ fb.textContent='Richteg!'; setTimeout(()=>{ idx=(idx+1)%items.length; load(idx); }, 800); }
+    else { fb.textContent='Nach eng Kéier!'; }
+  });
+
+  load(idx);
+})();
+
+/* ===== tabs ===== */
+document.querySelectorAll('.tab').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
+});
 </script>
 </body>
 </html>
+
 
