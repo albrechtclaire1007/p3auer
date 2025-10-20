@@ -12,9 +12,9 @@
   }
 
   :root{
-    /* P3 blues (adjust to your exact palette if needed) */
-    --p3-blue:#3a7bd5;        /* bright border */
-    --p3-blue-soft:#d9ecff;   /* soft UI bg */
+    --p3-blue:#75b7cb;
+    --p3-blue-soft:#e5f3f6;
+    --p3-red:#f1583f;
     --btn-radius:18px;
   }
 
@@ -24,95 +24,131 @@
     font-family:'Schoulschrëft', Arial, sans-serif;
     background:#fffef8;
     color:#111;
-    display:flex; flex-direction:column; min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
   }
 
-  /* top nav */
+  /* top bar */
   .topbar{
-    display:flex; justify-content:center; gap:16px;
-    padding:14px 12px; background:var(--p3-blue-soft);
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    padding:14px 12px;
+    background:var(--p3-blue-soft);
     border-bottom:4px solid var(--p3-blue);
   }
   .tab-btn{
-    background:#fff; border:3px solid var(--p3-blue);
-    border-radius:999px; padding:8px 18px; font-size:22px; cursor:pointer;
+    font-family:'Schoulschrëft', Arial, sans-serif;
+    background:#fff;
+    border:3px solid var(--p3-blue);
+    border-radius:999px;
+    padding:8px 18px;
+    font-size:22px;
+    cursor:pointer;
   }
-  .tab-btn.active{ background:#f7fbff }
+  .tab-btn.active{ background:#f8fcfd; }
 
-  /* prompt row */
-  .prompt-wrap{
-    display:flex; justify-content:center; padding:18px 10px 8px;
-  }
+  /* prompt */
+  .prompt-wrap{ display:flex; justify-content:center; padding:18px 10px 8px; }
   #prompt{
-    background:#fff; border:3px solid var(--p3-blue);
-    border-radius:20px; padding:8px 16px; font-size:34px;
+    background:#fff;
+    border:3px solid var(--p3-blue);
+    border-radius:20px;
+    padding:8px 16px;
+    font-size:34px;
     max-width:min(90vw, 900px);
   }
 
-  /* controls (listen) */
-  .controls{
-    display:flex; justify-content:center; gap:12px; padding:10px 0 0;
-  }
+  /* listen button */
+  .controls{ display:flex; justify-content:center; gap:12px; padding:10px 0 0; }
   .btn{
-    border:3px solid var(--p3-blue); background:#fff;
-    border-radius:var(--btn-radius); padding:10px 20px; font-size:22px; cursor:pointer;
     font-family:'Schoulschrëft', Arial, sans-serif;
+    border:3px solid var(--p3-blue);
+    background:#fff;
+    border-radius:var(--btn-radius);
+    padding:10px 20px;
+    font-size:22px;
+    cursor:pointer;
   }
 
-  /* stage and clock */
-  .stage{ display:flex; flex-direction:column; align-items:center; padding:18px 12px 28px; }
+  /* clock area */
+  .stage{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:18px 12px 28px;
+  }
   #clock{
-    position:relative; width:360px; height:360px;
-    background:#fff; border:12px solid red; border-radius:50%;
-    margin:18px auto; box-shadow:0 6px 18px rgba(0,0,0,.06);
+    position:relative;
+    width:360px; height:360px;
+    background:#fff;
+    border:12px solid var(--p3-red);
+    border-radius:50%;
+    margin:18px auto;
+    box-shadow:0 6px 18px rgba(0,0,0,.06);
   }
   .number{
-    position:absolute; width:36px; height:36px; font-size:30px; text-align:center; line-height:36px;
-    transform:translate(-50%, -50%); color:#000; font-family:'Schoulschrëft', Arial, sans-serif;
+    position:absolute;
+    width:40px; height:40px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:30px;
+    color:#000;
+    transform:translate(-50%, -50%);
+    font-family:'Schoulschrëft', Arial, sans-serif;
   }
   .hand{
-    position:absolute; left:50%; top:50%; transform-origin:50% 100%;
-    cursor:grab; border-radius:6px; touch-action:none;
+    position:absolute;
+    left:50%; top:50%;
+    transform-origin:50% 100%;
+    cursor:grab;
+    border-radius:6px;
+    touch-action:none;
   }
-  #hourHand{ width:8px; height:110px; background:red; transform:translate(-50%, -100%) rotate(0deg); }
-  #minuteHand{ width:6px; height:150px; background:blue; transform:translate(-50%, -100%) rotate(0deg); }
+  #hourHand{
+    width:8px; height:110px;
+    background:var(--p3-red);
+    transform:translate(-50%, -100%) rotate(0deg);
+  }
+  #minuteHand{
+    width:6px; height:150px;
+    background:var(--p3-blue);
+    transform:translate(-50%, -100%) rotate(0deg);
+  }
   .pivot{
-    position:absolute; left:50%; top:50%; width:18px; height:18px; background:#fff;
-    border:4px solid #c00; border-radius:50%; transform:translate(-50%, -50%);
+    position:absolute;
+    left:50%; top:50%;
+    width:18px; height:18px;
+    background:#fff;
+    border:4px solid var(--p3-red);
+    border-radius:50%;
+    transform:translate(-50%, -50%);
   }
 
-  /* validate at bottom */
-  #validateBtn{
-    margin-top:10px;
-  }
-
+  #validateBtn{ margin-top:10px; }
   #feedback{ min-height:36px; font-size:26px; margin-top:6px; }
 
   @media (max-width:480px){
     #clock{ width:300px; height:300px }
     #hourHand{ height:92px } #minuteHand{ height:128px }
-    .number{ font-size:26px; width:32px; height:32px; line-height:32px }
+    .number{ font-size:26px; width:34px; height:34px }
     #prompt{ font-size:28px }
   }
 </style>
 </head>
 <body>
 
-<!-- top navigation -->
 <div class="topbar">
-  <button class="tab-btn active" aria-current="page">1. Spill</button>
+  <button class="tab-btn active">1. Spill</button>
   <button class="tab-btn" onclick="alert('2. Spill kënnt geschwënn.')">2. Spill</button>
 </div>
 
-<!-- prompt -->
 <div class="prompt-wrap"><div id="prompt">Et ass zéng Auer</div></div>
 
-<!-- controls (only listen here) -->
 <div class="controls">
   <button class="btn" id="listenBtn">Lauschteren</button>
 </div>
 
-<!-- clock + validate (at bottom) -->
 <div class="stage">
   <div id="clock"></div>
   <button class="btn" id="validateBtn">Validéieren</button>
@@ -120,135 +156,125 @@
 </div>
 
 <script>
-/* --------- DATA: 15 P3 examples --------- */
-/* label, target hour (1–12), target minutes, audio placeholder */
+/* ----------- data (P3 times) ----------- */
 const items = [
-  { label:"Et ass zéng Auer",         h:10, m:0,  audio:"audio/p3_zeng_auer.mp3" },
-  { label:"Et ass hallwer zwielef",   h:11, m:30, audio:"audio/p3_hallwer_zwielef.mp3" }, // 11:30
-  { label:"Et ass néng Auer",         h:9,  m:0,  audio:"audio/p3_neng_auer.mp3" },
-  { label:"Et ass hallwer siwen",     h:6,  m:30, audio:"audio/p3_hallwer_siwen.mp3" },   // 6:30
-  { label:"Et ass aacht Auer",        h:8,  m:0,  audio:"audio/p3_aacht_auer.mp3" },
-  { label:"Et ass hallwer dräi",      h:2,  m:30, audio:"audio/p3_hallwer_draei.mp3" },   // 2:30
-  { label:"Et ass zwielef Auer",      h:12, m:0,  audio:"audio/p3_zwielef_auer.mp3" },
-  { label:"Et ass hallwer néng",      h:8,  m:30, audio:"audio/p3_hallwer_neng.mp3" },    // 8:30
-  { label:"Et ass dräi Auer",         h:3,  m:0,  audio:"audio/p3_draei_auer.mp3" },
-  { label:"Et ass hallwer aacht",     h:7,  m:30, audio:"audio/p3_hallwer_aacht.mp3" },   // 7:30
-  { label:"Et ass fënnef Auer",       h:5,  m:0,  audio:"audio/p3_fennef_auer.mp3" },
-  { label:"Et ass hallwer zéng",      h:9,  m:30, audio:"audio/p3_hallwer_zeng.mp3" },    // 9:30
-  { label:"Et ass sechs Auer",        h:6,  m:0,  audio:"audio/p3_sechs_auer.mp3" },
-  { label:"Et ass hallwer fënnef",    h:4,  m:30, audio:"audio/p3_hallwer_fennef.mp3" },  // 4:30
-  { label:"Et ass eng Auer",          h:1,  m:0,  audio:"audio/p3_eng_auer.mp3" }
+  { label:"Et ass zéng Auer", h:10, m:0,  audio:"audio/p3_zeng_auer.mp3" },
+  { label:"Et ass hallwer zwielef", h:11, m:30, audio:"audio/p3_hallwer_zwielef.mp3" },
+  { label:"Et ass néng Auer", h:9, m:0, audio:"audio/p3_neng_auer.mp3" },
+  { label:"Et ass hallwer siwen", h:6, m:30, audio:"audio/p3_hallwer_siwen.mp3" },
+  { label:"Et ass aacht Auer", h:8, m:0, audio:"audio/p3_aacht_auer.mp3" },
+  { label:"Et ass hallwer dräi", h:2, m:30, audio:"audio/p3_hallwer_draei.mp3" },
+  { label:"Et ass zwielef Auer", h:12, m:0, audio:"audio/p3_zwielef_auer.mp3" },
+  { label:"Et ass hallwer néng", h:8, m:30, audio:"audio/p3_hallwer_neng.mp3" },
+  { label:"Et ass dräi Auer", h:3, m:0, audio:"audio/p3_draei_auer.mp3" },
+  { label:"Et ass hallwer aacht", h:7, m:30, audio:"audio/p3_hallwer_aacht.mp3" },
+  { label:"Et ass fënnef Auer", h:5, m:0, audio:"audio/p3_fennef_auer.mp3" },
+  { label:"Et ass hallwer zéng", h:9, m:30, audio:"audio/p3_hallwer_zeng.mp3" },
+  { label:"Et ass sechs Auer", h:6, m:0, audio:"audio/p3_sechs_auer.mp3" },
+  { label:"Et ass hallwer fënnef", h:4, m:30, audio:"audio/p3_hallwer_fennef.mp3" },
+  { label:"Et ass eng Auer", h:1, m:0, audio:"audio/p3_eng_auer.mp3" }
 ];
-
-/* shuffle and iterate */
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 shuffle(items);
-let idx = 0;
+let idx=0;
 
-/* ----- CLOCK RENDER ----- */
-const clock = document.getElementById('clock');
-const R = 150;
-const center = {x:180, y:180};
+/* -------- clock -------- */
+const clock=document.getElementById('clock');
+const center={x:180,y:180};
+let hands;
 
 function drawNumbers(){
+  const existing=document.querySelectorAll('.number'); existing.forEach(n=>n.remove());
+  const rect=clock.getBoundingClientRect();
+  const radius=(rect.width/2)-28; // inward adjust
   for(let n=1;n<=12;n++){
-    const ang = (n-3)*(Math.PI*2)/12;
-    const x = center.x + R*Math.cos(ang);
-    const y = center.y + R*Math.sin(ang);
-    const d = document.createElement('div');
-    d.className='number';
-    d.style.left = x+'px'; d.style.top = y+'px';
-    d.textContent = n;
-    clock.appendChild(d);
+    const ang=(n-3)*(Math.PI*2)/12;
+    const x=center.x+radius*Math.cos(ang);
+    const y=center.y+radius*Math.sin(ang);
+    const el=document.createElement('div');
+    el.className='number';
+    el.style.left=x+'px'; el.style.top=y+'px';
+    el.textContent=n;
+    clock.appendChild(el);
   }
 }
 function createHands(){
-  const hour = document.createElement('div'); hour.id='hourHand'; hour.className='hand';
-  const min  = document.createElement('div'); min.id='minuteHand'; min.className='hand';
-  const pivot= document.createElement('div'); pivot.className='pivot';
-  clock.appendChild(hour); clock.appendChild(min); clock.appendChild(pivot);
-  return {hour, min};
+  const h=document.createElement('div');h.id='hourHand';h.className='hand';
+  const m=document.createElement('div');m.id='minuteHand';m.className='hand';
+  const p=document.createElement('div');p.className='pivot';
+  clock.appendChild(h);clock.appendChild(m);clock.appendChild(p);
+  return{hour:h,min:m};
 }
 drawNumbers();
-const hands = createHands();
+hands=createHands();
+window.addEventListener('resize',drawNumbers);
 
-/* ----- DRAG / TOUCH ----- */
+/* -------- dragging -------- */
 function angleFromPointer(e){
-  const rect = clock.getBoundingClientRect();
-  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
-  const px = (e.touches? e.touches[0].clientX : e.clientX);
-  const py = (e.touches? e.touches[0].clientY : e.clientY);
-  let deg = Math.atan2(py - cy, px - cx) * 180 / Math.PI + 90;
-  if(deg < 0) deg += 360;
+  const rect=clock.getBoundingClientRect();
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  const px=(e.touches?e.touches[0].clientX:e.clientX);
+  const py=(e.touches?e.touches[0].clientY:e.clientY);
+  let deg=Math.atan2(py-cy,px-cx)*180/Math.PI+90;
+  if(deg<0)deg+=360;
   return deg;
 }
 function makeRotatable(el){
   let active=false;
-  const start = ev=>{ if(ev.target!==el) return; active=true; ev.preventDefault(); }
-  const move  = ev=>{ if(!active) return; const deg = angleFromPointer(ev); setHand(el, deg); }
-  const end   = ()=>{ active=false; }
-  el.addEventListener('mousedown', start);
-  window.addEventListener('mousemove', move);
-  window.addEventListener('mouseup', end);
-  el.addEventListener('touchstart', start, {passive:false});
-  window.addEventListener('touchmove', move, {passive:false});
-  window.addEventListener('touchend', end);
+  const start=ev=>{if(ev.target!==el)return;active=true;ev.preventDefault();}
+  const move=ev=>{if(!active)return;const deg=angleFromPointer(ev);setHand(el,deg);}
+  const end=()=>{active=false;}
+  el.addEventListener('mousedown',start);
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',end);
+  el.addEventListener('touchstart',start,{passive:false});
+  window.addEventListener('touchmove',move,{passive:false});
+  window.addEventListener('touchend',end);
 }
-function setHand(el, deg){
-  el.style.transform = `translate(-50%, -100%) rotate(${deg}deg)`;
-  el.dataset.deg = deg;
+function setHand(el,deg){
+  el.style.transform=`translate(-50%,-100%) rotate(${deg}deg)`;
+  el.dataset.deg=deg;
 }
-makeRotatable(hands.hour);
-makeRotatable(hands.min);
+makeRotatable(hands.hour);makeRotatable(hands.min);
 
-/* ----- PROMPT / AUDIO / TARGETS ----- */
-const promptEl = document.getElementById('prompt');
-const feedbackEl = document.getElementById('feedback');
-const audio = new Audio();
+/* -------- load + validate -------- */
+const promptEl=document.getElementById('prompt');
+const feedbackEl=document.getElementById('feedback');
+const audio=new Audio();
 
 function loadItem(i){
-  const it = items[i];
-  promptEl.textContent = it.label;
-  feedbackEl.textContent = "";
-  // reset hands to 12:00
-  setHand(hands.min, 0);
-  setHand(hands.hour, 0);
-  // targets
-  const mAngle = it.m * 6;
-  const hAngle = ((it.h % 12) * 30) + it.m * 0.5;
-  hands.min.dataset.target = mAngle;
-  hands.hour.dataset.target = hAngle;
-  // audio
-  audio.src = it.audio;
+  const it=items[i];
+  promptEl.textContent=it.label;
+  feedbackEl.textContent="";
+  setHand(hands.min,0); setHand(hands.hour,0);
+  const mAng=it.m*6;
+  const hAng=((it.h%12)*30)+it.m*0.5;
+  hands.min.dataset.target=mAng;
+  hands.hour.dataset.target=hAng;
+  audio.src=it.audio;
 }
-
-/* ----- VALIDATION (Validéieren at bottom) ----- */
-function smallestAngleDiff(a,b){ let d = Math.abs(a-b) % 360; return d>180 ? 360-d : d }
-const MIN_TOL = 9;   // ~±1.5 minutes
-const HOUR_TOL = 7;  // allows for minute-coupled hour hand
-
+function smallestAngleDiff(a,b){let d=Math.abs(a-b)%360;return d>180?360-d:d}
+const MIN_TOL=9,HOUR_TOL=7;
 function validate(){
-  const mDeg = parseFloat(hands.min.dataset.deg || 0);
-  const hDeg = parseFloat(hands.hour.dataset.deg || 0);
-  const mTarget = parseFloat(hands.min.dataset.target);
-  const hTarget = parseFloat(hands.hour.dataset.target);
-  const okM = smallestAngleDiff(mDeg, mTarget) <= MIN_TOL;
-  const okH = smallestAngleDiff(hDeg, hTarget) <= HOUR_TOL;
-
-  if(okM && okH){
-    feedbackEl.textContent = "Richteg!";
-    setTimeout(()=>{ idx=(idx+1)%items.length; loadItem(idx); }, 800);
+  const mDeg=parseFloat(hands.min.dataset.deg||0);
+  const hDeg=parseFloat(hands.hour.dataset.deg||0);
+  const mTarget=parseFloat(hands.min.dataset.target);
+  const hTarget=parseFloat(hands.hour.dataset.target);
+  const okM=smallestAngleDiff(mDeg,mTarget)<=MIN_TOL;
+  const okH=smallestAngleDiff(hDeg,hTarget)<=HOUR_TOL;
+  if(okM&&okH){
+    feedbackEl.textContent="Richteg!";
+    setTimeout(()=>{idx=(idx+1)%items.length;loadItem(idx);},800);
   }else{
-    feedbackEl.textContent = "Nach eng Kéier!";
+    feedbackEl.textContent="Nach eng Kéier!";
   }
 }
 
-/* ----- WIRES ----- */
-document.getElementById('listenBtn').addEventListener('click', ()=> audio.play());
-document.getElementById('validateBtn').addEventListener('click', validate);
-
-/* init */
+/* -------- wires -------- */
+document.getElementById('listenBtn').addEventListener('click',()=>audio.play());
+document.getElementById('validateBtn').addEventListener('click',validate);
 loadItem(idx);
 </script>
 </body>
 </html>
+
