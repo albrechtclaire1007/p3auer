@@ -12,8 +12,8 @@
   }
 
   :root{
-    --red:#f1583f;
-    --blue:#75b7cb;
+    --red:#f1583f;      /* hour + pivot ring */
+    --blue:#75b7cb;     /* minute + accents */
     --blue-soft:#e5f3f6;
     --face:url('https://i.postimg.cc/6qC1Vnjg/temp-Imagel6-ZZRm.avif');
     --btn-r:18px;
@@ -25,6 +25,7 @@
     font-family:'Schoulschrëft', Arial, sans-serif; display:flex; flex-direction:column;
   }
 
+  /* tabs */
   .topbar{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;padding:14px 12px;background:var(--blue-soft);border-bottom:4px solid var(--blue);}
   .tab{background:#fff;border:3px solid var(--blue);border-radius:999px;padding:8px 16px;font-size:20px;cursor:pointer;font-family:'Schoulschrëft',Arial,sans-serif;}
   .tab.active{background:#f7fcfd}
@@ -36,7 +37,9 @@
   .btn{font-family:'Schoulschrëft',Arial,sans-serif;border:3px solid var(--blue);background:#fff;border-radius:var(--btn-r);padding:10px 20px;font-size:22px;cursor:pointer;}
   .btn[disabled]{opacity:.5; cursor:not-allowed;}
   .mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}
+  .row{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;}
 
+  /* clock with background image */
   .clock-wrap{display:flex;flex-direction:column;align-items:center;}
   .clock{
     position:relative;width:360px;height:360px;
@@ -44,6 +47,7 @@
     border-radius:50%;margin:16px auto;box-shadow:0 6px 18px rgba(0,0,0,.06);touch-action:none;
   }
 
+  /* invisible tick markers */
   .tick{position:absolute;width:44px;height:44px;transform:translate(-50%,-50%);border-radius:50%;pointer-events:none;}
   .flash-green{animation:greenflash 900ms ease-in-out 1;}
   @keyframes greenflash{
@@ -53,6 +57,7 @@
     100%{box-shadow:0 0 0 0 rgba(0,160,0,0);background:transparent;}
   }
 
+  /* hands (hour above minute; pivot above both) */
   .hand{position:absolute;left:50%;top:50%;transform-origin:50% 100%;border-radius:6px;touch-action:none;cursor:grab;z-index:1;}
   .min{  width:6px;height:150px;background:var(--blue);transform:translate(-50%,-100%) rotate(0deg);z-index:2;}
   .hour{ width:8px;height:110px;background:var(--red); transform:translate(-50%,-100%) rotate(0deg);z-index:3;}
@@ -61,6 +66,7 @@
 
   .readout{font-size:26px;min-height:32px}
 
+  /* quiz layout */
   .options{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 auto;}
   .opt-btn{ text-align:left; }
   .quiz-actions{display:flex;gap:10px;justify-content:center;margin-top:12px;}
@@ -83,6 +89,7 @@
   <button class="tab" data-target="spill3">3. Spill – Quiz</button>
 </div>
 
+<!-- Auer üben -->
 <section id="aueren" class="section active">
   <div class="center">
     <div class="chip">Probéier e puer Auerzäiten aus</div>
@@ -99,6 +106,7 @@
   </div>
 </section>
 
+<!-- 1. Spill – Hallwer -->
 <section id="spill1" class="section">
   <div class="center">
     <div class="chip">Beweeg <b>de Minuttenzär</b> bis bei déi nächst voll Stonn</div>
@@ -112,18 +120,22 @@
   </div>
 </section>
 
+<!-- 2. Spill – D’Zäit astellen (audio only, autoplay + replay) -->
 <section id="spill2" class="section">
   <div class="center">
-    <div id="pPrompt" class="chip">Et ass zéng Auer</div>
-    <div class="mt12"><button class="btn" id="pListen">Lauschteren</button></div>
+    <button class="btn" id="pEnableAudio" style="display:none">🔊 Audio aktivéieren</button>
   </div>
   <div class="clock-wrap mt16">
     <div id="c3" class="clock"></div>
-    <div class="center mt12"><button class="btn" id="pValidate">Validéieren</button></div>
-    <div id="pFeedback" class="readout center"></div>
+    <div class="row mt12">
+      <button class="btn" id="pReplay" disabled title="⟲ Nach eng Kéier lauschteren">⟲ Nach eng Kéier lauschteren</button>
+      <button class="btn" id="pValidate">Validéieren</button>
+    </div>
+    <div class="readout center" id="pFeedback"></div>
   </div>
 </section>
 
+<!-- 3. Spill – Quiz -->
 <section id="spill3" class="section">
   <div class="center">
     <div class="chip">Wéi vill Auer ass et?</div>
@@ -154,7 +166,7 @@ function degFromPointer(e, clockEl){
 function placeTicks(clockEl){
   clockEl.querySelectorAll('.tick').forEach(t=>t.remove());
   const rect=clockEl.getBoundingClientRect();
-  const radius = rect.width/2 - 24;
+  const radius = rect.width/2 - 24;  /* adjust if you change the face image */
   const cx=rect.width/2, cy=rect.height/2;
   for(let n=1;n<=12;n++){
     const ang=(n-3)*(Math.PI*2)/12;
@@ -239,11 +251,13 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   const fb=document.getElementById('hFeedback');
   const nextBtn=document.getElementById('nextHallwer');
 
-  let X=3;
+  let X=3; // start hour for X:30
 
   function setStart(x){
+    // solid reference at x:30
     setHand(mSolid, 180);
     setHand(hSolid, (x%12)*30 + 15);
+    // draggable ghosts start same
     setHand(mGhost, 180);
     setHand(hGhost, (x%12)*30 + 15);
     fb.textContent = "";
@@ -251,16 +265,18 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   function newRound(){ X = Math.floor(Math.random()*12)+1; setStart(X); }
   nextBtn.addEventListener('click', newRound);
 
+  // couple ghost hour based on ghost minute
   function coupleGhostByMinute(deg){
     setHand(mGhost, deg);
-    const mm = Math.round(((deg%360)+360)%360 / 6);
-    const forward = ((mm + 60) - 30) % 60;
-    const hourFrac = X + 0.5 + forward/60;
+    const mm = Math.round(((deg%360)+360)%360 / 6);     // 0..59
+    const forward = ((mm + 60) - 30) % 60;              // from :30 moving forward
+    const hourFrac = X + 0.5 + forward/60;              // toward next hour
     const hDeg = (hourFrac % 12) * 30;
     setHand(hGhost, hDeg);
     return { mm, hDeg };
   }
 
+  // drag minute ghost
   (function(){
     let on=false;
     const start=e=>{ if(e.target!==mGhost) return; on=true; e.preventDefault(); }
@@ -274,10 +290,11 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
     window.addEventListener('touchend',end);
   })();
 
+  // continuous success check (no auto-next)
   function check(){
     const mDeg = parseFloat(mGhost.dataset.deg||'0');
     const mm   = Math.round(((mDeg%360)+360)%360 / 6) % 60;
-    const atTop = (mm<=3 || mm>=57);
+    const atTop = (mm<=3 || mm>=57);                   // around 12
     const next = (X % 12) + 1;
     const hDeg = parseFloat(hGhost.dataset.deg||'0');
     const targetH = (next%12)*30;
@@ -296,28 +313,28 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   requestAnimationFrame(check);
 })();
 
-/* ---------- 2. Spill – D’Zäit astellen (with GitHub audio links) ---------- */
+/* ---------- 2. Spill – D’Zäit astellen (audio-only, autoplay + replay) ---------- */
 (function(){
   const RAW = "https://github.com/albrechtclaire1007/p3auer/raw/refs/heads/main/";
   const items = [
     // Voll Stonnen (1,3,5,6,8,9,10,12)
-    { label:"Et ass zéng Auer",       h:10, m:0,  audio: RAW + "10%20AUER.mp3" },
-    { label:"Et ass néng Auer",       h:9,  m:0,  audio: RAW + "9%20AUER.mp3"  },
-    { label:"Et ass aacht Auer",      h:8,  m:0,  audio: RAW + "8%20AUER.mp3"  },
-    { label:"Et ass fënnef Auer",     h:5,  m:0,  audio: RAW + "5%20AUER.mp3"  },
-    { label:"Et ass sechs Auer",      h:6,  m:0,  audio: RAW + "6%20AUER.mp3"  },
-    { label:"Et ass dräi Auer",       h:3,  m:0,  audio: RAW + "3%20AUER.mp3"  },
-    { label:"Et ass zwielef Auer",    h:12, m:0,  audio: RAW + "12%20AUER.mp3" },
-    { label:"Et ass eng Auer",        h:1,  m:0,  audio: RAW + "1%20AUER.mp3"  },
+    { h:10, m:0,  audio: RAW + "10%20AUER.mp3" },
+    { h:9,  m:0,  audio: RAW + "9%20AUER.mp3"  },
+    { h:8,  m:0,  audio: RAW + "8%20AUER.mp3"  },
+    { h:5,  m:0,  audio: RAW + "5%20AUER.mp3"  },
+    { h:6,  m:0,  audio: RAW + "6%20AUER.mp3"  },
+    { h:3,  m:0,  audio: RAW + "3%20AUER.mp3"  },
+    { h:12, m:0,  audio: RAW + "12%20AUER.mp3" },
+    { h:1,  m:0,  audio: RAW + "1%20AUER.mp3"  },
 
     // Hallef Stonnen (2:30,4:30,6:30,7:30,8:30,9:30,11:30)
-    { label:"Et ass hallwer dräi",    h:2,  m:30, audio: RAW + "230.mp3" },
-    { label:"Et ass hallwer fënnef",  h:4,  m:30, audio: RAW + "430.mp3" },
-    { label:"Et ass hallwer siwen",   h:6,  m:30, audio: RAW + "630.mp3" },
-    { label:"Et ass hallwer aacht",   h:7,  m:30, audio: RAW + "730.mp3" },
-    { label:"Et ass hallwer néng",    h:8,  m:30, audio: RAW + "830.mp3" },
-    { label:"Et ass hallwer zéng",    h:9,  m:30, audio: RAW + "930.mp3" },
-    { label:"Et ass hallwer zwielef", h:11, m:30, audio: RAW + "1130.mp3" },
+    { h:2,  m:30, audio: RAW + "230.mp3"  },
+    { h:4,  m:30, audio: RAW + "430.mp3"  },
+    { h:6,  m:30, audio: RAW + "630.mp3"  },
+    { h:7,  m:30, audio: RAW + "730.mp3"  },
+    { h:8,  m:30, audio: RAW + "830.mp3"  },
+    { h:9,  m:30, audio: RAW + "930.mp3"  },
+    { h:11, m:30, audio: RAW + "1130.mp3" },
   ];
   function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
   shuffle(items);
@@ -331,19 +348,41 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   root.append(hour,min,pivot);
   window.addEventListener('resize', ()=>placeTicks(root));
 
-  const promptEl=document.getElementById('pPrompt');
   const fb=document.getElementById('pFeedback');
+  const enableBtn=document.getElementById('pEnableAudio');
+  const replayBtn=document.getElementById('pReplay');
   const audio=new Audio();
+
+  // try to play; if blocked, show "enable audio" button
+  function tryPlay(resetTime=false){
+    if(resetTime) audio.currentTime = 0;
+    enableBtn.style.display='none';
+    const p = audio.play();
+    if(p && typeof p.then==='function'){
+      p.then(()=>{ replayBtn.disabled = false; }).catch(()=>{ enableBtn.style.display='inline-block'; });
+    }else{
+      // older browsers
+      replayBtn.disabled = false;
+    }
+  }
 
   function load(i){
     const it=items[i];
-    promptEl.textContent = it.label;
     setHand(min,0); setHand(hour,0);
     min.dataset.target = (it.m*6);
     hour.dataset.target = ((it.h%12)*30 + it.m*0.5);
     audio.src = it.audio;
+    replayBtn.disabled = true;
     fb.textContent = '';
+    // enable replay once we can play (preload)
+    audio.oncanplay = ()=>{ replayBtn.disabled = false; audio.oncanplay = null; };
+    // autoplay this round
+    tryPlay();
   }
+
+  enableBtn.addEventListener('click', ()=>tryPlay(false));
+  replayBtn.addEventListener('click', ()=>tryPlay(true));
+
   function smallest(a,b){ let d=Math.abs(a-b)%360; return d>180?360-d:d }
   const MIN_TOL=9, HOUR_TOL=7;
 
@@ -361,20 +400,21 @@ document.getElementById('toggleDigital').addEventListener('change', e=>{
   }
   drag(min); drag(hour);
 
-  document.getElementById('pListen').addEventListener('click', ()=>audio.play());
   document.getElementById('pValidate').addEventListener('click', ()=>{
     const mDeg=parseFloat(min.dataset.deg||0), hDeg=parseFloat(hour.dataset.deg||0);
-    const mt=parseFloat(min.dataset.target), ht=parseFloat(hour.dataset.target);
+    const mt=parseFloat(min.dataset.target),   ht=parseFloat(hour.dataset.target);
     const okM = smallest(mDeg, mt) <= MIN_TOL;
     const okH = smallest(hDeg, ht) <= HOUR_TOL;
     fb.textContent = (okM && okH) ? 'Richteg!' : 'Nach eng Kéier!';
-    if(okM && okH){ setTimeout(()=>{ idx=(idx+1)%items.length; load(idx); }, 800); }
+    if(okM && okH){
+      setTimeout(()=>{ idx=(idx+1)%items.length; load(idx); }, 800);
+    }
   });
 
   load(idx);
 })();
 
-/* ---------- 3. Spill – QUIZ (unchanged) ---------- */
+/* ---------- 3. Spill – QUIZ (recreated from your PDF) ---------- */
 (function(){
   const quizData = [
     { h:11, m:30, opts:["Et ass hallwer zwierlef.","Et ass zwierlef hallwer.","Et ass hallwer eng."], correct:0 },
